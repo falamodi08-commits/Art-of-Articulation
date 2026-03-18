@@ -5,9 +5,8 @@
  * Functions receive state + topics as parameters — no globals.
  */
 
-import { PHRASES, CONSTRAINTS, checkConstraints, wordList } from "./analysis.js";
-import { modeCfg } from "../data/topics.js";
-
+import { analyseOffline, wordList } from "./analysis.js";
+import { topics } from "./topics.js";
 // ── Header / progress ────────────────────────────────────
 
 export function updateHeader(state) {
