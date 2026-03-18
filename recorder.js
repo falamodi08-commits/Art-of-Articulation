@@ -11,7 +11,7 @@
  */
 
 import { saveRecording, getRecordingsForDay, deleteRecording } from "./storage.js";
-import { formatTime } from "./timers.js";
+import { bell } from "./timers.js";
 
 /** Prefer high-quality formats; fall back gracefully. */
 const MIME_CANDIDATES = [
