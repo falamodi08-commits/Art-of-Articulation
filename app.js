@@ -5,21 +5,19 @@
  * Nothing here manipulates the DOM directly — that's ui.js's job.
  * Nothing here does I/O — that's storage.js's job.
  */
-
-import { topics, weekNames }                                         from "./data/topics.js";
+import { topics, weekNames }                                         from "./topics.js";
 import { loadState, saveState, getSession,
          saveRecording, getRecordingsForDay, deleteRecording,
-         clearAllRecordings }                                        from "./modules/storage.js";
-import { TimerEngine, bell }                                         from "./modules/timers.js";
-import { Recorder }                                                  from "./modules/recorder.js";
-import { analyseOffline, wordList }                                  from "./modules/analysis.js";
-import { renderFeedback, runOfflineFeedback, runAIFeedback }         from "./modules/feedback.js";
+         clearAllRecordings }                                        from "./storage.js";
+import { TimerEngine, bell }                                         from "./timers.js";
+import { Recorder }                                                  from "./recorder.js";
+import { analyseOffline, wordList }                                  from "./analysis.js";
+import { renderFeedback, runOfflineFeedback, runAIFeedback }         from "./feedback.js";
 import { updateHeader, renderList, injectModeUI, goToPhase,
          setSessionHeader, updateSidebarStats, renderCoach,
          renderConstraints, updateConstraintChip, showViolations,
          renderRecordings, updateRefPanels, updateWordCount,
-         showView, toast }                                           from "./modules/ui.js";
-
+         showView, toast }                                           from "./ui.js";
 // ── App state ─────────────────────────────────────────────
 
 let state      = loadState();
