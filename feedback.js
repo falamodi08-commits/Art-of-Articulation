@@ -9,7 +9,7 @@
  * Both paths produce the same result shape and call renderFeedback().
  */
 
-import { analyseOffline, buildHeatmap } from "./analysis.js";
+import { analyseOffline, wordList } from "./analysis.js";
 
 // ── Render ────────────────────────────────────────────────
 
