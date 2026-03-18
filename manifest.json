@@ -1,0 +1,16 @@
+{
+  "name": "Art of Articulation",
+  "short_name": "AoA",
+  "description": "A 60-day daily practice to build clarity, depth, and confidence in speaking and writing.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f6f1e7",
+  "theme_color": "#12100e",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' rx='32' fill='%2312100e'/><text x='50%25' y='58%25' font-size='100' text-anchor='middle' dominant-baseline='middle' fill='%23e8c97a' font-family='Georgia,serif'>A</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}

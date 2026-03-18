@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Art of Articulation</title>
+  <meta name="description" content="A 60-day daily practice to build clarity, depth, and confidence in speaking and writing.">
+  <meta name="theme-color" content="#12100e">
+
+  <!-- PWA manifest -->
+  <link rel="manifest" href="./manifest.json">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+<!-- ═══════════════ HEADER ═════════════════════════════════ -->
+<header class="app-header">
+  <div class="logo">Art of <em>Articulation</em></div>
+  <div class="header-center">
+    <div class="hp-track"><div class="hp-fill" id="hpFill"></div></div>
+    <span class="hp-label" id="hpLabel">0 / 60</span>
+  </div>
+  <div class="header-right">
+    <button class="hdr-btn" id="exportBtn">EXPORT</button>
+    <button class="hdr-btn" id="importBtn">IMPORT</button>
+  </div>
+</header>
+
+<!-- ═══════════════ LIST VIEW ══════════════════════════════ -->
+<div id="listView" class="view active">
+  <div class="list-hero">
+    <h2>Your 60-Day Journey</h2>
+    <p>20 minutes a day. No research. Just you, a topic, and the discipline to think and speak clearly. Click any day to begin your session.</p>
+  </div>
+  <div class="list-body" id="listBody"></div>
+</div>
+
+<!-- ═══════════════ SESSION VIEW ═══════════════════════════ -->
+<div id="sessionView" class="view">
+
+  <!-- Dark left sidebar -->
+  <aside class="session-sidebar">
+    <div class="sidebar-day"   id="sidebarDay"></div>
+    <div class="sidebar-topic" id="sidebarTopic"></div>
+
+    <div class="phase-item ph-bs" id="sNav1">
+      <div class="phase-dot"></div>
+      <span class="phase-label">BRAINSTORM</span>
+      <span class="phase-time">5 min</span>
+    </div>
+    <div class="phase-item ph-wr" id="sNav2">
+      <div class="phase-dot"></div>
+      <span class="phase-label">WRITE</span>
+      <span class="phase-time">10 min</span>
+    </div>
+    <div class="phase-item ph-sp" id="sNav3">
+      <div class="phase-dot"></div>
+      <span class="phase-label">SPEAK</span>
+      <span class="phase-time">5 min</span>
+    </div>
+    <div class="phase-item ph-fb" id="sNav4">
+      <div class="phase-dot"></div>
+      <span class="phase-label">FEEDBACK</span>
+      <span class="phase-time">AI</span>
+    </div>
+
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-stats-title">TODAY</div>
+    <div class="sidebar-stat">Words written <span id="sbWords">0</span></div>
+    <div class="sidebar-stat">Recordings    <span id="sbRecs">0</span></div>
+
+    <button class="sidebar-complete-btn" id="sessionCompleteBtn">MARK COMPLETE</button>
+  </aside>
+
+  <!-- Main content -->
+  <main class="session-main">
+
+    <!-- ─── PHASE 1: BRAINSTORM ─── -->
+    <div class="phase-panel p1" id="phase1">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 01 · BRAINSTORM</div>
+          <div class="phase-title">Free-form thinking</div>
+          <div class="phase-desc">Don't filter. Write anything that comes to mind — bullets, fragments, questions, contradictions. Let it all out.</div>
+        </div>
+        <div class="timer-widget">
+          <div class="timer-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="33"/>
+              <circle class="ring-fill" cx="40" cy="40" r="33" id="t1ring"
+                      stroke-dasharray="207.3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="t1num">5:00</div>
+          </div>
+          <div class="timer-label">minutes</div>
+          <div class="timer-controls">
+            <button class="tc-btn" id="t1btn">START</button>
+            <button class="tc-btn" id="t1reset">RESET</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="modeBadge1"></div>
+      <div id="modeGuide1"></div>
+
+      <div class="prompt-card">
+        <div class="prompt-card-label">TODAY'S TOPIC</div>
+        <div class="prompt-card-topic" id="pTopic1"></div>
+        <div class="prompt-card-hint"  id="pHint1"></div>
+      </div>
+
+      <textarea class="write-area" id="brainstormText"
+        placeholder="Start writing anything that comes to mind. No rules.&#10;&#10;• " rows="12"></textarea>
+      <div class="word-count" id="wc1">0 words</div>
+
+      <div class="btn-row">
+        <button class="next-btn" id="goPhase2">MOVE TO WRITING →</button>
+        <button class="back-btn" id="exitSessionBtn">← Back to list</button>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 2: WRITE ─── -->
+    <div class="phase-panel p2" id="phase2">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 02 · WRITE</div>
+          <div id="modeBadge2" style="margin-top:8px"></div>
+          <div class="phase-title">Structure your thoughts</div>
+          <div class="phase-desc" id="p2desc">Turn your brainstorm into a clear, structured piece. Write as if you're about to deliver this to a real audience.</div>
+        </div>
+        <div class="timer-widget">
+          <div class="timer-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="33"/>
+              <circle class="ring-fill" cx="40" cy="40" r="33" id="t2ring"
+                      stroke-dasharray="207.3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="t2num">10:00</div>
+          </div>
+          <div class="timer-label">minutes</div>
+          <div class="timer-controls">
+            <button class="tc-btn" id="t2btn">START</button>
+            <button class="tc-btn" id="t2reset">RESET</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-card-label">YOUR BRAINSTORM — for reference</div>
+        <div class="prompt-card-ref" id="brainstormRef"></div>
+      </div>
+
+      <div class="coach-toggle-row">
+        <input type="checkbox" id="coachToggle" style="accent-color:var(--gold)">
+        <label class="coach-toggle-lbl" for="coachToggle">THINKING COACH</label>
+      </div>
+      <div id="coachCard" style="display:none"></div>
+
+      <div class="constraint-row">
+        <span class="constraint-lbl">Constraints:</span>
+        <div id="constraintChips"></div>
+      </div>
+      <div class="violation-note" id="violationNote"></div>
+
+      <textarea class="write-area" id="writeText"
+        placeholder="Write your structured piece here. Clear opening, key points, strong close." rows="14"></textarea>
+      <div class="word-count" id="wc2">0 words</div>
+
+      <div class="btn-row">
+        <button class="next-btn" id="goPhase3">MOVE TO SPEAKING →</button>
+        <button class="back-btn" onclick="document.getElementById('sNav1').click()">← Back to Brainstorm</button>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 3: SPEAK ─── -->
+    <div class="phase-panel p3" id="phase3">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 03 · SPEAK</div>
+          <div id="modeBadge3" style="margin-top:8px"></div>
+          <div class="phase-title">Say it out loud</div>
+          <div class="phase-desc" id="p3desc">Read your piece aloud, then try delivering it naturally without reading. Record as many takes as you like.</div>
+        </div>
+        <div class="timer-widget">
+          <div class="timer-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg"   cx="40" cy="40" r="33"/>
+              <circle class="ring-fill" cx="40" cy="40" r="33" id="t3ring"
+                      stroke-dasharray="207.3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="t3num">5:00</div>
+          </div>
+          <div class="timer-label">minutes</div>
+          <div class="timer-controls">
+            <button class="tc-btn" id="t3btn">START</button>
+            <button class="tc-btn" id="t3reset">RESET</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="prompt-card">
+        <div class="prompt-card-label">YOUR WRITTEN PIECE — for reference</div>
+        <div class="prompt-card-ref" id="speechRef"></div>
+      </div>
+
+      <div class="recorder-area">
+        <div class="rec-time" id="recTime">0:00</div>
+        <button class="rec-button" id="recBtn" aria-label="Record take">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+            <path d="M19 11a7 7 0 0 1-14 0"
+                  fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="19" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="8"  y1="23" x2="16" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="rec-status" id="recStatus">TAP TO START RECORDING</div>
+        <div class="recordings-list" id="recordingsList"></div>
+      </div>
+
+      <div class="btn-row">
+        <button class="next-btn" id="goPhase4">GET FEEDBACK →</button>
+        <button class="back-btn" onclick="document.getElementById('sNav2').click()">← Back to Writing</button>
+      </div>
+    </div>
+
+    <!-- ─── PHASE 4: FEEDBACK ─── -->
+    <div class="phase-panel p4" id="phase4">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 04 · FEEDBACK</div>
+          <div class="phase-title">Analysis</div>
+          <div class="phase-desc">Scores, your strongest line, what worked, and what to focus on tomorrow.</div>
+        </div>
+      </div>
+
+      <div class="feedback-actions">
+        <button class="next-btn" id="offlineFeedbackBtn" style="font-size:10px;padding:10px 20px">⚙ OFFLINE ANALYSIS</button>
+        <button class="next-btn ai-btn" id="aiFeedbackBtn">✦ AI FEEDBACK</button>
+      </div>
+
+      <div class="feedback-panel" id="feedbackPanel">
+        <div class="feedback-loading" id="feedbackLoading" style="display:none">
+          <div class="dots-loader"><span></span><span></span><span></span></div>
+          Analysing your work…
+        </div>
+        <div class="feedback-content" id="feedbackContent"></div>
+      </div>
+
+      <div class="btn-row" style="margin-top:24px">
+        <button class="complete-btn" id="completeBtn">✓ MARK DAY COMPLETE</button>
+        <button class="back-btn" onclick="document.getElementById('sNav3').click()">← Back to Speaking</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════ MODALS ══════════════════════════════════ -->
+<div class="modal-scrim" id="exportModal">
+  <div class="modal-box">
+    <h3>Export your practice</h3>
+    <p>Download as a full JSON backup for later restore, or as a plain-text archive of all your writing.</p>
+    <div class="modal-btns">
+      <button class="btn-modal primary" id="doExportJson">↓ JSON BACKUP</button>
+      <button class="btn-modal"         id="doExportTxt">↓ WRITING TXT</button>
+      <button class="btn-modal"         id="closeExportModal">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-scrim" id="importModal">
+  <div class="modal-box">
+    <h3>Import / Reset</h3>
+    <p>Select a previously exported JSON file to restore your progress. This will overwrite your current data.</p>
+    <div class="modal-btns">
+      <button class="btn-modal primary" id="doImportSelect">CHOOSE FILE</button>
+      <button class="btn-modal danger"  id="doClearAll">CLEAR ALL</button>
+      <button class="btn-modal"         id="closeImportModal">CANCEL</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="importFileInput" accept=".json" style="display:none">
+
+<!-- ═══════════════ TOASTS ══════════════════════════════════ -->
+<div class="toast-shelf" id="toastShelf" aria-live="polite"></div>
+
+<!-- Wire timer toggle/reset buttons after DOM is loaded -->
+<script type="module">
+  import { TimerEngine } from "./modules/timers.js";
+  // Timer buttons delegate to app.js via custom events so we don't
+  // need inline handlers. app.js sets up all listeners on DOMContentLoaded.
+</script>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>
