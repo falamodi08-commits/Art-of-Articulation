@@ -1,0 +1,1410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art of Articulation</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink:    #12100e;
+  --paper:  #f6f1e7;
+  --cream:  #ede6d3;
+  --accent: #b5341c;
+  --gold:   #c9972a;
+  --muted:  #7a6e5f;
+  --border: #d8cdb8;
+  --p1:     #2a5a8c;
+  --p2:     #7a3d8c;
+  --p3:     #1e7a52;
+  --done:   #4a7c59;
+  --card:   #faf6ee;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: 'DM Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; }
+
+/* HEADER */
+.app-header {
+  background: var(--ink); padding: 20px 40px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100; gap: 24px;
+}
+.logo { font-family: 'Playfair Display', serif; font-size: 20px; color: var(--paper); flex-shrink: 0; }
+.logo em { font-style: italic; color: #e8c97a; }
+.header-center { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: center; }
+.hp-track { width: 160px; height: 3px; background: rgba(255,255,255,0.12); border-radius: 2px; overflow: hidden; }
+.hp-fill { height: 100%; background: #e8c97a; transition: width .5s ease; }
+.hp-label { font-family: 'DM Mono', monospace; font-size: 11px; color: rgba(255,255,255,0.45); white-space: nowrap; }
+.header-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.hdr-btn {
+  background: transparent; border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.55); font-family: 'DM Mono', monospace;
+  font-size: 9px; letter-spacing: 1.5px; padding: 5px 11px; border-radius: 4px;
+  cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.hdr-btn:hover { border-color: rgba(255,255,255,0.35); color: var(--paper); }
+
+/* VIEWS */
+.view { display: none; }
+.view.active { display: block; }
+
+/* ── LIST VIEW ─────────────────────────────────── */
+.list-hero { padding: 52px 40px 36px; max-width: 860px; margin: 0 auto; }
+.list-hero h2 { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 400; margin-bottom: 10px; }
+.list-hero p { color: var(--muted); font-size: 15px; line-height: 1.7; max-width: 480px; }
+.list-body { max-width: 860px; margin: 0 auto; padding: 0 40px 80px; }
+.week-section { margin-bottom: 40px; }
+.week-head {
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  padding-bottom: 10px; border-bottom: 1px solid var(--border); margin-bottom: 4px;
+}
+.day-row {
+  display: grid; grid-template-columns: 44px 1fr 100px;
+  align-items: center; gap: 16px;
+  padding: 14px 8px; border-bottom: 1px solid var(--border);
+  cursor: pointer; transition: background .15s, transform .1s; border-radius: 6px;
+}
+.day-row:hover { background: rgba(0,0,0,.03); transform: translateX(2px); }
+.day-row.completed { background: #f0f7f2; }
+.day-row.completed .day-topic { color: var(--muted); text-decoration: line-through; text-decoration-color: #8fbc8f; }
+.day-n { font-family: 'Playfair Display', serif; font-size: 22px; color: var(--muted); text-align: right; line-height: 1; }
+.day-row.completed .day-n { color: #8fbc8f; }
+.day-cat { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 2px; }
+.day-row.completed .day-cat { color: #8fbc8f; }
+.day-topic { font-size: 15px; font-weight: 400; }
+.day-info-score { margin-top: 4px; display: flex; gap: 6px; flex-wrap: wrap; }
+.score-mini {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: .5px;
+  padding: 2px 6px; border-radius: 3px;
+  background: var(--cream); border: 1px solid var(--border); color: var(--muted);
+}
+.score-mini.ai { background: rgba(201,151,42,.12); border-color: var(--gold); color: var(--gold); }
+.day-actions { display: flex; gap: 8px; justify-content: flex-end; align-items: center; }
+.start-btn {
+  background: var(--ink); color: var(--paper); border: none;
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px;
+  padding: 7px 14px; border-radius: 4px; cursor: pointer; transition: background .15s;
+}
+.start-btn:hover { background: #333; }
+.start-btn.done-btn { background: var(--done); }
+.check-mark {
+  width: 20px; height: 20px; border: 1.5px solid var(--border); border-radius: 4px;
+  display: flex; align-items: center; justify-content: center; background: white; flex-shrink: 0;
+}
+.day-row.completed .check-mark { background: var(--done); border-color: var(--done); }
+.check-mark svg { display: none; width: 10px; height: 10px; stroke: white; stroke-width: 3; fill: none; }
+.day-row.completed .check-mark svg { display: block; }
+
+/* ── SESSION VIEW ───────────────────────────────── */
+#sessionView { min-height: calc(100vh - 61px); display: none; flex-direction: row; }
+#sessionView.active { display: flex; }
+
+.session-sidebar {
+  width: 210px; min-width: 210px; background: var(--ink);
+  padding: 28px 20px; display: flex; flex-direction: column; gap: 4px;
+  position: sticky; top: 61px; height: calc(100vh - 61px); overflow-y: auto;
+}
+.sidebar-day { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: rgba(245,240,232,.3); margin-bottom: 6px; }
+.sidebar-topic { font-family: 'Playfair Display', serif; font-size: 13px; color: rgba(245,240,232,.55); line-height: 1.5; margin-bottom: 24px; font-style: italic; }
+.phase-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 12px; border-radius: 6px; cursor: pointer;
+  transition: background .15s; opacity: .4;
+}
+.phase-item.active { opacity: 1; background: rgba(255,255,255,.08); }
+.phase-item.done-phase { opacity: .65; }
+.phase-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.ph-bs .phase-dot { background: var(--p1); }
+.ph-wr .phase-dot { background: var(--p2); }
+.ph-sp .phase-dot { background: var(--p3); }
+.ph-fb .phase-dot { background: var(--gold); }
+.phase-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--paper); letter-spacing: 1px; }
+.phase-time { font-family: 'DM Mono', monospace; font-size: 9px; color: rgba(255,255,255,.35); margin-left: auto; }
+.sidebar-divider { height: 1px; background: rgba(255,255,255,.07); margin: 12px 0; }
+.sidebar-stats-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: rgba(245,240,232,.3); margin-top: 4px; margin-bottom: 6px; }
+.sidebar-stat { font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(245,240,232,.45); padding: 3px 12px; display: flex; justify-content: space-between; }
+.sidebar-stat span { color: rgba(201,151,42,.8); }
+
+.session-main { flex: 1; padding: 40px 52px; min-width: 0; }
+
+/* ── PHASE PANELS ───────────────────────────────── */
+.phase-panel { display: none; }
+.phase-panel.active { display: block; animation: fadeUp .3s ease; }
+@keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+.phase-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 28px; gap: 20px; }
+.phase-meta { flex: 1; }
+.phase-num { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 6px; }
+.phase-title { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 400; }
+.phase-desc { font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.6; max-width: 500px; }
+.p1 .phase-num, .p1 .phase-title { color: var(--p1); }
+.p2 .phase-num, .p2 .phase-title { color: var(--p2); }
+.p3 .phase-num, .p3 .phase-title { color: var(--p3); }
+.p4 .phase-num, .p4 .phase-title { color: var(--gold); }
+
+/* ── TIMER ─────────────────────────────────────── */
+.timer-widget { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; }
+.timer-ring { position: relative; width: 80px; height: 80px; }
+.timer-ring svg { transform: rotate(-90deg); width: 80px; height: 80px; }
+.ring-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+.ring-fill { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.p1 .ring-fill { stroke: var(--p1); }
+.p2 .ring-fill { stroke: var(--p2); }
+.p3 .ring-fill { stroke: var(--p3); }
+.timer-num { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 500; }
+.timer-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); margin-top: 6px; text-transform: uppercase; }
+.timer-controls { display: flex; gap: 6px; margin-top: 8px; }
+.tc-btn {
+  background: var(--cream); border: 1px solid var(--border); border-radius: 4px;
+  font-family: 'DM Mono', monospace; font-size: 9px; padding: 4px 8px; cursor: pointer;
+  letter-spacing: 1px; transition: background .15s; color: var(--ink);
+}
+.tc-btn:hover { background: var(--border); }
+
+/* ── PROMPT CARD ───────────────────────────────── */
+.prompt-card { background: var(--ink); color: var(--paper); border-radius: 10px; padding: 20px 24px; margin-bottom: 22px; }
+.prompt-card-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: rgba(245,240,232,.4); margin-bottom: 8px; }
+.prompt-card-topic { font-family: 'Playfair Display', serif; font-size: 19px; font-weight: 400; line-height: 1.3; margin-bottom: 8px; }
+.prompt-card-hint { font-size: 13px; color: rgba(245,240,232,.55); line-height: 1.6; font-style: italic; }
+.prompt-card-ref { font-family: 'DM Sans', sans-serif; font-size: 13px; color: rgba(245,240,232,.6); white-space: pre-wrap; max-height: 120px; overflow-y: auto; line-height: 1.6; margin-top: 4px; }
+
+/* ── MODE BADGE ─────────────────────────────────── */
+.mode-badge { display: inline-flex; align-items: center; gap: 7px; padding: 5px 13px; border-radius: 20px; font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; margin-bottom: 16px; }
+.mode-badge.mode-P { background: #fdf0ee; color: #b5341c; border: 1px solid #e8b4ac; }
+.mode-badge.mode-I { background: #eef4fb; color: #2a5a8c; border: 1px solid #aac4e0; }
+.mode-badge.mode-E { background: #f0f7f2; color: #1e7a52; border: 1px solid #a0ccb0; }
+.mode-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.mode-P .mode-dot { background: #b5341c; }
+.mode-I .mode-dot { background: #2a5a8c; }
+.mode-E .mode-dot { background: #1e7a52; }
+.mode-guide { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 20px; }
+.mode-guide-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); margin-bottom: 8px; }
+.mode-guide-text { font-size: 13px; line-height: 1.7; }
+.mode-guide-tips { margin-top: 10px; display: flex; flex-direction: column; gap: 4px; }
+.mode-tip { font-size: 12px; color: var(--muted); display: flex; gap: 8px; }
+
+/* ── TEXTAREA ─────────────────────────────────── */
+.write-area {
+  width: 100%; min-height: 260px; border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 20px 24px; font-family: 'DM Sans', sans-serif; font-size: 15px; line-height: 1.8;
+  resize: vertical; background: var(--card); color: var(--ink);
+  transition: border-color .2s; outline: none;
+}
+.write-area:focus { border-color: var(--ink); }
+.write-area::placeholder { color: #b8ae9f; font-style: italic; }
+.word-count { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); text-align: right; margin-top: 6px; letter-spacing: 1px; }
+
+/* ── COACH CARD ─────────────────────────────────── */
+.coach-card { background: var(--cream); border: 1px solid var(--border); border-radius: 8px; padding: 16px 20px; margin-bottom: 18px; }
+.coach-card-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); margin-bottom: 12px; }
+.coach-q { font-size: 13px; line-height: 1.7; padding-left: 14px; border-left: 2px solid var(--gold); margin-bottom: 8px; }
+.coach-q:last-child { margin-bottom: 0; }
+.coach-q strong { color: var(--gold); }
+
+/* ── CONSTRAINTS ─────────────────────────────────── */
+.constraint-row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 16px; }
+.constraint-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); margin-right: 4px; text-transform: uppercase; }
+.chip {
+  font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; padding: 4px 10px;
+  border-radius: 20px; border: 1px solid var(--border); cursor: pointer;
+  background: var(--cream); color: var(--muted); transition: all .15s; text-transform: uppercase;
+}
+.chip:hover { border-color: var(--ink); color: var(--ink); }
+.chip.on { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.chip.violated { border-color: var(--accent); color: var(--accent); }
+.violation-note {
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--accent);
+  background: #fdf0ee; border: 1px solid #e8b4ac; border-radius: 6px;
+  padding: 8px 12px; margin-bottom: 12px; display: none; letter-spacing: .5px;
+}
+.violation-note.on { display: block; }
+
+/* ── RECORDER ─────────────────────────────────── */
+.recorder-area {
+  border: 1.5px solid var(--border); border-radius: 8px; padding: 28px;
+  background: var(--card); display: flex; flex-direction: column; align-items: center; gap: 16px;
+}
+.rec-button {
+  width: 68px; height: 68px; border-radius: 50%; border: none;
+  background: var(--accent); cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .15s, box-shadow .15s; position: relative;
+  box-shadow: 0 4px 20px rgba(181,52,28,.3);
+}
+.rec-button:hover { transform: scale(1.05); }
+.rec-button.recording { animation: recpulse 1.5s infinite; }
+.rec-button.recording::after {
+  content: ''; position: absolute; width: 100%; height: 100%;
+  border-radius: 50%; border: 2px solid rgba(181,52,28,.4);
+  animation: ripple 1.5s infinite;
+}
+@keyframes recpulse { 0%,100%{box-shadow:0 4px 20px rgba(181,52,28,.5)} 50%{box-shadow:0 4px 40px rgba(181,52,28,.8)} }
+@keyframes ripple { 0%{transform:scale(1);opacity:1} 100%{transform:scale(1.6);opacity:0} }
+.rec-button svg { width: 24px; height: 24px; fill: white; }
+.rec-status { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); letter-spacing: 1px; text-align: center; }
+.rec-time { font-family: 'DM Mono', monospace; font-size: 28px; color: var(--ink); display: none; }
+.rec-time.visible { display: block; }
+.recordings-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.recording-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; background: var(--cream); border-radius: 6px; border: 1px solid var(--border); }
+.recording-item audio { flex: 1; height: 32px; }
+.del-rec { background: none; border: none; cursor: pointer; color: var(--muted); font-size: 16px; padding: 2px 6px; border-radius: 4px; transition: color .15s; }
+.del-rec:hover { color: var(--accent); }
+.rec-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); white-space: nowrap; }
+
+/* ── BUTTONS ─────────────────────────────────── */
+.next-btn {
+  background: var(--ink); color: var(--paper); border: none;
+  font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px;
+  padding: 13px 28px; border-radius: 6px; cursor: pointer;
+  transition: background .15s, transform .1s; display: inline-flex; align-items: center; gap: 10px;
+}
+.next-btn:hover { background: #333; transform: translateY(-1px); }
+.next-btn.ai-btn {
+  background: transparent; color: #e8c97a;
+  border: 1.5px solid rgba(201,151,42,.5);
+}
+.next-btn.ai-btn:hover { background: rgba(201,151,42,.1); border-color: var(--gold); transform: translateY(-1px); }
+.next-btn.ai-btn.loading { opacity: .6; cursor: wait; }
+.back-btn {
+  background: none; border: 1px solid var(--border);
+  font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted);
+  padding: 8px 16px; border-radius: 6px; cursor: pointer; letter-spacing: 1px; transition: all .15s;
+}
+.back-btn:hover { border-color: var(--ink); color: var(--ink); }
+.complete-btn {
+  background: var(--done); color: white; border: none;
+  font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px;
+  padding: 13px 28px; border-radius: 6px; cursor: pointer;
+  transition: background .15s, transform .1s; display: none; align-items: center; gap: 10px;
+}
+.complete-btn:hover { background: #3a6347; transform: translateY(-1px); }
+.complete-btn.show { display: inline-flex; }
+.btn-row { display: flex; align-items: center; gap: 14px; margin-top: 26px; flex-wrap: wrap; }
+.coach-toggle-row { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.coach-toggle-lbl { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); cursor: pointer; }
+
+/* ── FEEDBACK ─────────────────────────────────── */
+.feedback-panel { background: var(--card); border: 1.5px solid var(--border); border-radius: 12px; padding: 28px 30px; }
+.feedback-loading { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 14px; }
+.dots-loader { display: flex; gap: 5px; }
+.dots-loader span { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); animation: dotB 1.2s infinite; }
+.dots-loader span:nth-child(2) { animation-delay: .2s; }
+.dots-loader span:nth-child(3) { animation-delay: .4s; }
+@keyframes dotB { 0%,80%,100%{transform:translateY(0);opacity:.4} 40%{transform:translateY(-6px);opacity:1} }
+.feedback-content { display: none; }
+.feedback-content.visible { display: block; }
+.feedback-header { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+.feedback-badge { background: var(--gold); color: white; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; padding: 4px 10px; border-radius: 20px; }
+.feedback-badge.ai { background: var(--ink); color: #e8c97a; border: 1px solid rgba(201,151,42,.4); }
+.feedback-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 400; }
+.score-row { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 24px; }
+.score-chip { background: var(--cream); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; text-align: center; min-width: 70px; }
+.score-chip.lit { border-color: var(--gold); }
+.score-num { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 400; color: var(--ink); line-height: 1; }
+.score-chip.lit .score-num { color: var(--gold); }
+.score-lbl { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 1px; margin-top: 4px; }
+.fb-sections { display: flex; flex-direction: column; gap: 20px; }
+.fb-block { padding-top: 18px; border-top: 1px solid var(--border); }
+.fb-stitle { font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; color: var(--muted); }
+.fb-stitle.gold { color: var(--gold); }
+.fb-stitle.green { color: var(--p3); }
+.fb-stitle.blue { color: var(--p1); }
+.fb-stitle.red { color: var(--accent); }
+.fb-text { font-size: 14px; line-height: 1.75; }
+.fb-text ul { padding-left: 18px; display: flex; flex-direction: column; gap: 6px; margin-top: 4px; }
+.fb-text ul li { line-height: 1.65; }
+.fb-highlight { font-family: 'Playfair Display', serif; font-size: 16px; line-height: 1.65; font-style: italic; background: var(--cream); border-left: 3px solid var(--gold); padding: 12px 16px; border-radius: 0 6px 6px 0; }
+.fb-challenge { background: #fdf0ee; border: 1px dashed var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 14px; line-height: 1.7; color: var(--ink); }
+
+/* ── DIAGNOSTICS ─────────────────────────────── */
+.diag-section { margin-top: 24px; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; }
+.diag-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 13px 18px; background: var(--cream); cursor: pointer;
+  font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted);
+  user-select: none; transition: background .15s;
+}
+.diag-header:hover { background: var(--border); }
+.diag-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1px; background: var(--border); display: none; }
+.diag-grid.open { display: grid; }
+.diag-card { background: var(--card); padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.diag-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; margin-bottom: 4px; }
+.diag-val { font-family: 'Playfair Display', serif; font-size: 17px; font-weight: 400; }
+.diag-sub { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; line-height: 1.6; }
+.diag-ok { color: var(--p3); font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; }
+.diag-warn { color: var(--accent); font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 600; }
+
+/* ── HEATMAP ─────────────────────────────────── */
+.heatmap-wrap { border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; }
+.heatmap-head { padding: 10px 16px; background: var(--cream); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; color: var(--muted); display: flex; justify-content: space-between; align-items: center; }
+.hm-legend { display: flex; gap: 10px; }
+.hm-leg { font-size: 10px; padding: 2px 6px; border-radius: 3px; }
+.hm-body { padding: 10px 14px; background: var(--card); max-height: 200px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px; }
+.hm-line { font-size: 13px; line-height: 1.6; padding: 3px 8px; border-radius: 4px; }
+.hm-strong { background: rgba(30,122,82,.14); border-left: 2px solid var(--p3); }
+.hm-weak { background: rgba(181,52,28,.1); border-left: 2px solid rgba(181,52,28,.4); }
+.hm-neutral { background: rgba(201,151,42,.08); border-left: 2px solid rgba(201,151,42,.25); }
+.hm-empty { font-size: 13px; color: var(--muted); font-style: italic; padding: 8px 2px; }
+
+/* ── MODAL ─────────────────────────────────────── */
+.modal-scrim { position: fixed; inset: 0; background: rgba(18,16,14,.55); z-index: 5000; display: none; align-items: center; justify-content: center; }
+.modal-scrim.on { display: flex; }
+.modal-box { background: var(--paper); border-radius: 12px; padding: 32px; max-width: 400px; width: 90%; border: 1px solid var(--border); box-shadow: 0 20px 60px rgba(0,0,0,.3); }
+.modal-box h3 { font-family: 'Playfair Display', serif; font-size: 20px; font-weight: 400; margin-bottom: 8px; }
+.modal-box p { font-size: 13px; color: var(--muted); line-height: 1.65; margin-bottom: 20px; }
+.modal-btns { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-modal { flex: 1; min-width: 110px; padding: 10px 14px; border-radius: 6px; font-size: 12px; cursor: pointer; border: 1px solid var(--border); background: var(--cream); color: var(--ink); font-family: 'DM Mono', monospace; letter-spacing: 1px; transition: transform .1s; text-align: center; }
+.btn-modal:hover { transform: translateY(-1px); }
+.btn-modal.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn-modal.danger { background: var(--accent); color: white; border-color: var(--accent); }
+
+/* TOAST */
+.toast-shelf { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 9999; pointer-events: none; align-items: center; }
+.toast-item { background: var(--ink); color: var(--paper); padding: 11px 22px; border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 1px; white-space: nowrap; animation: toastIn .25s ease; }
+@keyframes toastIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* RESPONSIVE */
+@media (max-width: 760px) {
+  .session-sidebar { display: none; }
+  .session-main { padding: 24px 20px; }
+  .phase-header { flex-direction: column; }
+  .app-header, .list-hero, .list-body { padding-left: 20px; padding-right: 20px; }
+  .day-row { grid-template-columns: 36px 1fr; }
+  .day-actions { display: none; }
+}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">Art of <em>Articulation</em></div>
+  <div class="header-center">
+    <div class="hp-track"><div class="hp-fill" id="hpFill" style="width:0%"></div></div>
+    <span class="hp-label" id="hpLabel">0 / 60</span>
+  </div>
+  <div class="header-right">
+    <button class="hdr-btn" id="exportBtn">EXPORT</button>
+    <button class="hdr-btn" id="importBtn">IMPORT</button>
+  </div>
+</header>
+
+<!-- LIST VIEW -->
+<div id="listView" class="view active">
+  <div class="list-hero">
+    <h2>Your 60-Day Journey</h2>
+    <p>20 minutes a day. No research. Just you, a topic, and the discipline to think and speak clearly. Click any day to begin your session.</p>
+  </div>
+  <div class="list-body" id="listBody"></div>
+</div>
+
+<!-- SESSION VIEW -->
+<div id="sessionView" class="view">
+  <div class="session-sidebar">
+    <div class="sidebar-day" id="sidebarDay"></div>
+    <div class="sidebar-topic" id="sidebarTopic"></div>
+    <div class="phase-item ph-bs" id="sNav1" onclick="goToPhase(1)">
+      <div class="phase-dot"></div><span class="phase-label">BRAINSTORM</span><span class="phase-time">5 min</span>
+    </div>
+    <div class="phase-item ph-wr" id="sNav2" onclick="goToPhase(2)">
+      <div class="phase-dot"></div><span class="phase-label">WRITE</span><span class="phase-time">10 min</span>
+    </div>
+    <div class="phase-item ph-sp" id="sNav3" onclick="goToPhase(3)">
+      <div class="phase-dot"></div><span class="phase-label">SPEAK</span><span class="phase-time">5 min</span>
+    </div>
+    <div class="phase-item ph-fb" id="sNav4" onclick="goToPhase(4)">
+      <div class="phase-dot"></div><span class="phase-label">FEEDBACK</span><span class="phase-time">AI</span>
+    </div>
+    <div class="sidebar-divider"></div>
+    <div class="sidebar-stats-title">TODAY</div>
+    <div class="sidebar-stat">Words written<span id="sbWords">0</span></div>
+    <div class="sidebar-stat">Recordings<span id="sbRecs">0</span></div>
+  </div>
+
+  <div class="session-main">
+
+    <!-- PHASE 1: BRAINSTORM -->
+    <div class="phase-panel p1" id="phase1">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 01 · BRAINSTORM</div>
+          <div class="phase-title">Free-form thinking</div>
+          <div class="phase-desc">Don't filter. Write anything that comes to mind — bullets, fragments, questions, contradictions. Let it all out.</div>
+        </div>
+        <div class="timer-widget">
+          <div class="timer-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="33"/>
+              <circle class="ring-fill" id="t1ring" cx="40" cy="40" r="33" stroke-dasharray="207.3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="t1num">5:00</div>
+          </div>
+          <div class="timer-label">minutes</div>
+          <div class="timer-controls">
+            <button class="tc-btn" id="t1btn" onclick="toggleTimer(1)">START</button>
+            <button class="tc-btn" onclick="resetTimer(1)">RESET</button>
+          </div>
+        </div>
+      </div>
+      <div id="modeBadge1"></div>
+      <div id="modeGuide1"></div>
+      <div class="prompt-card">
+        <div class="prompt-card-label">TODAY'S TOPIC</div>
+        <div class="prompt-card-topic" id="pTopic1"></div>
+        <div class="prompt-card-hint" id="pHint1"></div>
+      </div>
+      <textarea class="write-area" id="brainstormText" placeholder="Start writing anything that comes to mind. No rules.&#10;&#10;• "></textarea>
+      <div class="word-count" id="wc1">0 words</div>
+      <div class="btn-row">
+        <button class="next-btn" onclick="goToPhase(2)">MOVE TO WRITING →</button>
+        <button class="back-btn" onclick="exitSession()">← Back to list</button>
+      </div>
+    </div>
+
+    <!-- PHASE 2: WRITE -->
+    <div class="phase-panel p2" id="phase2">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 02 · WRITE</div>
+          <div id="modeBadge2" style="margin-top:8px"></div>
+          <div class="phase-title">Structure your thoughts</div>
+          <div class="phase-desc" id="p2desc">Turn your brainstorm into a clear, structured piece. Write as if you're about to deliver this to a real audience.</div>
+        </div>
+        <div class="timer-widget">
+          <div class="timer-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="33"/>
+              <circle class="ring-fill" id="t2ring" cx="40" cy="40" r="33" stroke-dasharray="207.3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="t2num">10:00</div>
+          </div>
+          <div class="timer-label">minutes</div>
+          <div class="timer-controls">
+            <button class="tc-btn" id="t2btn" onclick="toggleTimer(2)">START</button>
+            <button class="tc-btn" onclick="resetTimer(2)">RESET</button>
+          </div>
+        </div>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-card-label">YOUR BRAINSTORM — for reference</div>
+        <div class="prompt-card-ref" id="brainstormRef"></div>
+      </div>
+
+      <div class="coach-toggle-row">
+        <input type="checkbox" id="coachToggle" style="accent-color:var(--gold)">
+        <label class="coach-toggle-lbl" for="coachToggle">THINKING COACH</label>
+      </div>
+      <div id="coachCard" style="display:none"></div>
+
+      <div class="constraint-row">
+        <span class="constraint-lbl">Constraints:</span>
+        <div id="constraintChips"></div>
+      </div>
+      <div class="violation-note" id="violationNote"></div>
+
+      <textarea class="write-area" id="writeText" placeholder="Write your structured piece here. Clear opening, key points, strong close."></textarea>
+      <div class="word-count" id="wc2">0 words</div>
+      <div class="btn-row">
+        <button class="next-btn" onclick="goToPhase(3)">MOVE TO SPEAKING →</button>
+        <button class="back-btn" onclick="goToPhase(1)">← Back to Brainstorm</button>
+      </div>
+    </div>
+
+    <!-- PHASE 3: SPEAK -->
+    <div class="phase-panel p3" id="phase3">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 03 · SPEAK</div>
+          <div id="modeBadge3" style="margin-top:8px"></div>
+          <div class="phase-title">Say it out loud</div>
+          <div class="phase-desc" id="p3desc">Read your piece aloud, then try delivering it naturally without reading. Record as many takes as you like.</div>
+        </div>
+        <div class="timer-widget">
+          <div class="timer-ring">
+            <svg viewBox="0 0 80 80">
+              <circle class="ring-bg" cx="40" cy="40" r="33"/>
+              <circle class="ring-fill" id="t3ring" cx="40" cy="40" r="33" stroke-dasharray="207.3" stroke-dashoffset="0"/>
+            </svg>
+            <div class="timer-num" id="t3num">5:00</div>
+          </div>
+          <div class="timer-label">minutes</div>
+          <div class="timer-controls">
+            <button class="tc-btn" id="t3btn" onclick="toggleTimer(3)">START</button>
+            <button class="tc-btn" onclick="resetTimer(3)">RESET</button>
+          </div>
+        </div>
+      </div>
+      <div class="prompt-card">
+        <div class="prompt-card-label">YOUR WRITTEN PIECE — for reference</div>
+        <div class="prompt-card-ref" id="speechRef"></div>
+      </div>
+      <div class="recorder-area">
+        <div class="rec-time" id="recTime">0:00</div>
+        <button class="rec-button" id="recBtn" onclick="toggleRecording()">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 1a4 4 0 0 1 4 4v7a4 4 0 0 1-8 0V5a4 4 0 0 1 4-4z"/>
+            <path d="M19 11a7 7 0 0 1-14 0" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="19" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="8" y1="23" x2="16" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <div class="rec-status" id="recStatus">TAP TO START RECORDING</div>
+        <div class="recordings-list" id="recordingsList"></div>
+      </div>
+      <div class="btn-row">
+        <button class="next-btn" onclick="goToPhase(4)">GET FEEDBACK →</button>
+        <button class="back-btn" onclick="goToPhase(2)">← Back to Writing</button>
+      </div>
+    </div>
+
+    <!-- PHASE 4: FEEDBACK -->
+    <div class="phase-panel p4" id="phase4">
+      <div class="phase-header">
+        <div class="phase-meta">
+          <div class="phase-num">PHASE 04 · FEEDBACK</div>
+          <div class="phase-title">Analysis</div>
+          <div class="phase-desc">Scores, your strongest line, what worked, and what to focus on next.</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap">
+        <button class="next-btn" onclick="runOfflineFeedback()" style="font-size:10px;padding:10px 20px">⚙ OFFLINE ANALYSIS</button>
+        <button class="next-btn ai-btn" id="aiFeedbackBtn" onclick="runAIFeedback()">✦ AI FEEDBACK</button>
+      </div>
+      <div class="feedback-panel" id="feedbackPanel">
+        <div class="feedback-loading" id="feedbackLoading" style="display:none">
+          <div class="dots-loader"><span></span><span></span><span></span></div>
+          Analysing your work…
+        </div>
+        <div class="feedback-content" id="feedbackContent"></div>
+      </div>
+      <div class="btn-row" style="margin-top:24px">
+        <button class="complete-btn" id="completeBtn" onclick="markComplete()">✓ MARK DAY COMPLETE</button>
+        <button class="back-btn" onclick="exitSession()">← Back to list</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Modals -->
+<div class="modal-scrim" id="exportModal">
+  <div class="modal-box">
+    <h3>Export your practice</h3>
+    <p>Download as a full JSON backup, or as a plain-text archive of all your writing.</p>
+    <div class="modal-btns">
+      <button class="btn-modal primary" id="doExportJson">↓ JSON BACKUP</button>
+      <button class="btn-modal" id="doExportTxt">↓ WRITING TXT</button>
+      <button class="btn-modal" id="closeExport">CANCEL</button>
+    </div>
+  </div>
+</div>
+<div class="modal-scrim" id="importModal">
+  <div class="modal-box">
+    <h3>Import / Reset</h3>
+    <p>Select a previously exported JSON file to restore your progress. This will overwrite current data.</p>
+    <div class="modal-btns">
+      <button class="btn-modal primary" id="doImportSelect">CHOOSE FILE</button>
+      <button class="btn-modal danger" id="doClear">CLEAR ALL</button>
+      <button class="btn-modal" id="closeImport">CANCEL</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="importFileInput" accept=".json" style="display:none">
+<div class="toast-shelf" id="toastShelf"></div>
+
+<script>
+/* ═══════════════ TOPICS ═════════════════════════════════ */
+const topics = [
+  {cat:"Opinion",topic:"Paper books vs digital books",prompt:"Beyond nostalgia — what are the real differences in how we read, remember, and relate to a book?",mode:"P"},
+  {cat:"Reflection",topic:"The best time of day to think deeply",prompt:"When is your mind sharpest? What conditions actually produce your best thinking?",mode:"I"},
+  {cat:"Observation",topic:"Something you noticed today that most people overlook",prompt:"Pick one specific thing. Why do you think it goes unnoticed?",mode:"I"},
+  {cat:"Personal",topic:"How you prefer to receive feedback",prompt:"What makes feedback useful versus harmful? What's your honest reaction to criticism?",mode:"E"},
+  {cat:"Mindset",topic:"The value of being bored",prompt:"What happens in your mind when you resist filling silence? Is boredom a problem or a resource?",mode:"P"},
+  {cat:"Lifestyle",topic:"Morning routines — discipline or overrated?",prompt:"Are structured mornings a genuine advantage or a form of self-performance?",mode:"P"},
+  {cat:"Self",topic:"A habit you have that you've never examined",prompt:"Pick one automatic behavior. Where did it come from and what does it actually do for you?",mode:"E"},
+  {cat:"Psychology",topic:"What is confidence really?",prompt:"Not the performance of confidence — the actual state. What does it feel like and where does it come from?",mode:"E"},
+  {cat:"Productivity",topic:"The difference between being busy and being productive",prompt:"They feel similar from the inside. How do you tell them apart?",mode:"I"},
+  {cat:"Values",topic:"What success means to you personally",prompt:"Not what you were taught it means — what you actually measure it by, honestly.",mode:"E"},
+  {cat:"Psychology",topic:"Why people resist change even when they want it",prompt:"You've seen this in yourself. What's the real mechanism?",mode:"I"},
+  {cat:"Philosophy",topic:"The role of luck vs effort in outcomes",prompt:"Where does credit honestly belong? Does your answer change when things go badly?",mode:"P"},
+  {cat:"Learning",topic:"What it means to be well-read",prompt:"Is it breadth, depth, retention, or something else? Can you be well-read in one domain?",mode:"I"},
+  {cat:"Cognition",topic:"Why humans find patterns everywhere",prompt:"Useful feature or dangerous bug? Where has it helped or misled you?",mode:"I"},
+  {cat:"Society",topic:"What social media has done to conversation",prompt:"Not the standard take — your specific observation about how discourse has actually changed.",mode:"P"},
+  {cat:"Relationships",topic:"The value of disagreement in a friendship",prompt:"When does friction make a relationship stronger? When does it break it?",mode:"E"},
+  {cat:"Memory",topic:"Why nostalgia is so powerful",prompt:"What does it actually do to your thinking? Is it honest or does it edit?",mode:"E"},
+  {cat:"Society",topic:"Are manners a form of honesty or performance?",prompt:"When you're polite, are you being genuine or wearing a mask — and does it matter?",mode:"P"},
+  {cat:"Culture",topic:"What gets lost when a language disappears",prompt:"Language carries culture, memory, and ways of thinking. What exactly dies with it?",mode:"I"},
+  {cat:"Society",topic:"Why people follow trends they don't understand",prompt:"Fashion, slang, ideas — why do we adopt things we can't fully explain?",mode:"E"},
+  {cat:"Culture",topic:"The idea of home",prompt:"Is home a place, a feeling, or a set of people? Can you have more than one?",mode:"E"},
+  {cat:"Mindset",topic:"The most useful thing failure has taught you",prompt:"Not a cliché — a specific, real lesson. How did it change your behavior?",mode:"E"},
+  {cat:"Growth",topic:"When is perseverance actually stubbornness?",prompt:"How do you know the difference between commitment and being too proud to quit?",mode:"P"},
+  {cat:"Mindset",topic:"How you handle uncertainty",prompt:"Do you tolerate it, resist it, seek it? What's your honest relationship with not knowing?",mode:"E"},
+  {cat:"Growth",topic:"A belief you've changed your mind about",prompt:"What used to feel obviously true that you now see differently? What shifted you?",mode:"E"},
+  {cat:"Mindset",topic:"The difference between motivation and discipline",prompt:"One is a feeling, one is a system. Which do you rely on, and which should you?",mode:"P"},
+  {cat:"Growth",topic:"What you'd tell your 15-year-old self",prompt:"One piece of advice — not comfort, but genuinely useful insight.",mode:"I"},
+  {cat:"Mindset",topic:"How you know when you're making a decision from fear",prompt:"What does fear-based thinking look like in your own patterns?",mode:"E"},
+  {cat:"Communication",topic:"The difference between being heard and being understood",prompt:"Can you be heard by everyone and understood by no one? When does this happen?",mode:"I"},
+  {cat:"Language",topic:"Why some ideas are nearly impossible to explain",prompt:"Pick a feeling or concept you struggle to put into words. Why is that?",mode:"E"},
+  {cat:"Communication",topic:"What silence communicates that words cannot",prompt:"When does not speaking say more than speaking?",mode:"I"},
+  {cat:"Language",topic:"Why metaphors are more powerful than data",prompt:"A good metaphor can change minds where numbers don't. Why?",mode:"P"},
+  {cat:"Ethics",topic:"The ethics of persuasion",prompt:"When does persuasion become manipulation? Is there a clear line?",mode:"P"},
+  {cat:"Language",topic:"Words you use too much and what that reveals",prompt:"Pick a filler word or overused phrase you default to. What does it signal?",mode:"I"},
+  {cat:"Communication",topic:"What makes someone a compelling storyteller",prompt:"Not fiction — in real life. What do the best storytellers actually do?",mode:"I"},
+  {cat:"Observation",topic:"A texture, sound, or smell that transports you instantly",prompt:"Pick one sensory detail. Where does it take you? Why does it stick?",mode:"I"},
+  {cat:"Reflection",topic:"What you spend the most mental energy on daily",prompt:"If you tracked your thoughts for 24 hours, what category would dominate?",mode:"E"},
+  {cat:"Observation",topic:"How a city or neighborhood reflects its people",prompt:"Pick a place you know. What does its design say about the people who built it?",mode:"I"},
+  {cat:"Reflection",topic:"The last thing that genuinely surprised you",prompt:"Real surprise — something that revised your model of the world.",mode:"E"},
+  {cat:"Observation",topic:"What drives you to do something without being asked",prompt:"Find the intrinsic motivation beneath the behavior. What is it really?",mode:"E"},
+  {cat:"Reflection",topic:"A place where you feel most like yourself",prompt:"What about that environment frees you? What does that tell you about what you need?",mode:"E"},
+  {cat:"Observation",topic:"Something you do differently from most people around you",prompt:"Not better or worse — just different. Where did that divergence come from?",mode:"P"},
+  {cat:"Epistemology",topic:"How do you know when you actually understand something?",prompt:"Can you explain it simply? Can you apply it? What's your test for real understanding?",mode:"I"},
+  {cat:"Thinking",topic:"The limits of logic",prompt:"Are there questions that reason alone can't answer? What fills the gap?",mode:"E"},
+  {cat:"Knowledge",topic:"What it means to be an expert",prompt:"Is expertise about years spent, depth of knowledge, or something else entirely?",mode:"I"},
+  {cat:"Thinking",topic:"Why we're often wrong about what will make us happy",prompt:"Where do your predictions go wrong?",mode:"E"},
+  {cat:"Epistemology",topic:"The value of not having an opinion",prompt:"When is 'I don't know' a sign of wisdom rather than weakness?",mode:"I"},
+  {cat:"Knowledge",topic:"What curiosity actually feels like from the inside",prompt:"Describe the state. Is it comfortable? Uncomfortable? What triggers it for you?",mode:"E"},
+  {cat:"Thinking",topic:"The most dangerous assumption you carry",prompt:"One belief you hold so automatically it doesn't feel like a belief.",mode:"E"},
+  {cat:"Relationships",topic:"What makes someone trustworthy",prompt:"Not just reliable — trustworthy. What's the difference and what earns it?",mode:"P"},
+  {cat:"Relationships",topic:"How you know when a conversation is genuinely good",prompt:"What distinguishes a conversation you remember from one you immediately forget?",mode:"I"},
+  {cat:"Relationships",topic:"The difference between giving advice and actually helping",prompt:"When does advice make things worse?",mode:"I"},
+  {cat:"Others",topic:"Why we judge people for the same things we do ourselves",prompt:"Hypocrisy is universal. What's the psychological mechanism?",mode:"P"},
+  {cat:"Relationships",topic:"What loyalty actually demands",prompt:"Is loyalty always a virtue? When does it require honesty over support?",mode:"P"},
+  {cat:"Others",topic:"The kind of person you find hardest to understand",prompt:"An archetype, not an individual. What makes them difficult to relate to?",mode:"E"},
+  {cat:"Relationships",topic:"What you've learned about yourself from your friendships",prompt:"Patterns, tendencies, things you only see reflected in others.",mode:"E"},
+  {cat:"Big Picture",topic:"What is a life well-spent?",prompt:"Not a perfect life — a well-spent one. What does it look like at the end?",mode:"E"},
+  {cat:"Big Picture",topic:"The thing you most want to be remembered for",prompt:"Be honest, not noble. What do you actually want?",mode:"P"},
+  {cat:"Big Picture",topic:"What 'progress' really means to you",prompt:"Personal, societal, or both? How do you measure it?",mode:"I"},
+  {cat:"Reflection",topic:"What this 60-day challenge taught you about yourself",prompt:"Look back. What patterns emerged? What surprised you?",mode:"E"},
+];
+
+const weekNames = [
+  "Week 1 — Everyday Life & Opinion","Week 2 — Ideas & Concepts","Week 3 — Society & Culture",
+  "Week 4 — Personal Growth & Mindset","Week 5 — Communication & Language",
+  "Week 6 — Observation & The Physical World","Week 7 — Knowledge & Thinking",
+  "Week 8 — Relationships & Others","Final — The Big Questions"
+];
+
+const CONSTRAINTS = [
+  {id:"noCrutch",label:"NO CRUTCH WORDS"},
+  {id:"metaphor",label:"MUST USE METAPHOR"},
+  {id:"rebuttal",label:"MUST INCLUDE REBUTTAL"},
+  {id:"max120",label:"MAX 120 WORDS"}
+];
+
+/* ═══════════════ STATE ══════════════════════════════════ */
+const SK = 'aoa_v4';
+let state = { completed: [], sessions: {} };
+try { const s = localStorage.getItem(SK); if (s) state = JSON.parse(s); } catch(e) {}
+function save() { try { localStorage.setItem(SK, JSON.stringify(state)); } catch(e) {} }
+
+function sess(day) {
+  if (!state.sessions[day]) state.sessions[day] = { brainstorm:'', write:'', speechNotes:'', recordings:[], scores:null, diagnostics:null, feedbackSource:'', rewriteChallenge:'', constraints:{} };
+  return state.sessions[day];
+}
+
+let currentDay = null;
+
+/* ═══════════════ ANALYSIS PHRASES ══════════════════════ */
+const HEDGE      = ["kind of","sort of","maybe","I guess","perhaps","a bit","could be","seems like","not sure"];
+const CONVICTION = ["I believe","I know","without doubt","clearly","I am certain","the fact is"];
+const CRUTCH     = ["basically","literally","actually","just","very","really","like","you know","I mean","things","stuff","a lot"];
+const ETHOS      = ["in my experience","I've seen","as someone who"];
+const PATHOS     = ["imagine","feel","fear","hope","struggle","we all","everyone"];
+const LOGOS      = ["because","therefore","evidence","for example","research shows"];
+const T_CLAIM    = ["I believe","I think","I argue","I maintain"];
+const T_GROUNDS  = ["because","since","given that","due to"];
+const T_WARRANT  = ["this means","this shows","this suggests","ultimately","at its core"];
+const T_REBUTTAL = ["however","but","although","that said","to be fair","admittedly"];
+const PEEL_EV    = ["for example","for instance","such as","I remember","to illustrate"];
+const HOOKS      = ["imagine","picture","what if","have you ever","most people"];
+const CLOSING    = ["in the end","ultimately","the takeaway","my point is","so the next time"];
+
+/* ═══════════════ TIMERS ═════════════════════════════════ */
+const TD = {1:300, 2:600, 3:300};
+const TS = {
+  1:{rem:300,running:false,iv:null},
+  2:{rem:600,running:false,iv:null},
+  3:{rem:300,running:false,iv:null}
+};
+const C = 207.3;
+
+function dispTimer(n) {
+  const s=TS[n], tot=TD[n];
+  const m=Math.floor(s.rem/60), sec=s.rem%60;
+  document.getElementById('t'+n+'num').textContent = m+':'+(sec<10?'0':'')+sec;
+  const offset = C * (s.rem/tot);
+  document.getElementById('t'+n+'ring').style.strokeDashoffset = C - (C - offset);
+  // Actually: offset = C*(1 - rem/tot) means filled portion
+  document.getElementById('t'+n+'ring').style.strokeDashoffset = C*(s.rem/tot);
+  document.getElementById('t'+n+'btn').textContent = s.running ? 'PAUSE' : 'START';
+}
+
+function toggleTimer(n) {
+  const s=TS[n];
+  if (s.running) { clearInterval(s.iv); s.running=false; }
+  else {
+    if (s.rem<=0) resetTimer(n);
+    s.running=true;
+    s.iv=setInterval(()=>{
+      s.rem--; dispTimer(n);
+      if (s.rem<=0) {
+        clearInterval(s.iv); s.running=false;
+        bell();
+        if(n<3) toast(n===1?"Brainstorm time's up! Move to writing.":"Writing time's up! Time to speak.");
+        else toast("Speaking time's up! Get your feedback.");
+      }
+    },1000);
+  }
+  dispTimer(n);
+}
+
+function resetTimer(n) {
+  clearInterval(TS[n].iv); TS[n].running=false; TS[n].rem=TD[n]; dispTimer(n);
+}
+
+function stopAllTimers() {
+  [1,2,3].forEach(n=>{ clearInterval(TS[n].iv); TS[n].running=false; });
+}
+
+/* ═══════════════ AUDIO BELL ════════════════════════════ */
+function bell() {
+  try {
+    const ctx=new(window.AudioContext||window.webkitAudioContext)();
+    [[880,.25,0],[1108,.15,.1],[1318,.1,.2]].forEach(([f,g,t])=>{
+      const o=ctx.createOscillator(),gn=ctx.createGain();
+      o.connect(gn);gn.connect(ctx.destination);
+      o.type='sine';o.frequency.value=f;
+      gn.gain.setValueAtTime(g,ctx.currentTime+t);
+      gn.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+t+1.8);
+      o.start(ctx.currentTime+t);o.stop(ctx.currentTime+t+1.8);
+    });
+  } catch(e){}
+}
+
+/* ═══════════════ TOAST ══════════════════════════════════ */
+function toast(msg, dur=3000) {
+  const el=document.createElement('div');
+  el.className='toast-item'; el.textContent=msg;
+  document.getElementById('toastShelf').appendChild(el);
+  setTimeout(()=>el.remove(),dur);
+}
+
+/* ═══════════════ RECORDER ═══════════════════════════════ */
+let mediaRecorder=null, audioChunks=[], recIv=null, recSecs=0;
+
+function getRecordings() {
+  return (currentDay && sess(currentDay).recordings)||[];
+}
+
+async function blobToBase64(blob) {
+  return new Promise((res,rej)=>{
+    const r=new FileReader();
+    r.onloadend=()=>res(r.result); r.onerror=rej; r.readAsDataURL(blob);
+  });
+}
+
+function toggleRecording() {
+  if (mediaRecorder && mediaRecorder.state==='recording') { mediaRecorder.stop(); return; }
+  if (!navigator.mediaDevices?.getUserMedia) { toast('Microphone not available.'); return; }
+  navigator.mediaDevices.getUserMedia({audio:true}).then(stream=>{
+    const mime=['audio/webm;codecs=opus','audio/webm','audio/ogg;codecs=opus','audio/mp4'].find(m=>MediaRecorder.isTypeSupported(m))||'';
+    mediaRecorder=new MediaRecorder(stream,mime?{mimeType:mime}:{});
+    audioChunks=[];
+    mediaRecorder.ondataavailable=e=>{ if(e.data.size>0) audioChunks.push(e.data); };
+    mediaRecorder.onstop=async()=>{
+      stream.getTracks().forEach(t=>t.stop());
+      clearInterval(recIv);
+      document.getElementById('recTime').classList.remove('visible');
+      document.getElementById('recBtn').classList.remove('recording');
+      document.getElementById('recStatus').textContent='SAVING…';
+      try {
+        const blob=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});
+        const b64=await blobToBase64(blob);
+        const recs=getRecordings();
+        const now=new Date();
+        recs.push({b64,label:'Take '+(recs.length+1),ts:now.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+        sess(currentDay).recordings=recs; save();
+        renderRecs(); updateSidebarStats();
+        document.getElementById('recStatus').textContent='SAVED · TAP FOR ANOTHER TAKE';
+      } catch(e){ document.getElementById('recStatus').textContent='SAVE FAILED'; }
+    };
+    mediaRecorder.start(200); recSecs=0;
+    document.getElementById('recTime').classList.add('visible');
+    document.getElementById('recBtn').classList.add('recording');
+    document.getElementById('recStatus').textContent='RECORDING · TAP TO STOP';
+    recIv=setInterval(()=>{
+      recSecs++;
+      const m=Math.floor(recSecs/60),s=recSecs%60;
+      document.getElementById('recTime').textContent=m+':'+(s<10?'0':'')+s;
+    },1000);
+  }).catch(()=>{ document.getElementById('recStatus').textContent='MICROPHONE ACCESS DENIED'; });
+}
+
+function renderRecs() {
+  const list=document.getElementById('recordingsList'); list.innerHTML='';
+  const recs=getRecordings();
+  if(!recs.length) return;
+  recs.forEach((rec,i)=>{
+    const item=document.createElement('div'); item.className='recording-item';
+    item.innerHTML=`<div style="display:flex;flex-direction:column;gap:2px;min-width:90px"><span class="rec-num">${rec.label||'TAKE '+(i+1)}</span>${rec.ts?`<span style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted)">${rec.ts}</span>`:''}</div><audio src="${rec.b64}" controls style="flex:1;height:32px"></audio><button class="del-rec" onclick="delRec(${i})" title="Delete">✕</button>`;
+    list.appendChild(item);
+  });
+}
+
+function delRec(i) {
+  const recs=getRecordings(); recs.splice(i,1);
+  recs.forEach((r,idx)=>r.label='Take '+(idx+1));
+  sess(currentDay).recordings=recs; save();
+  renderRecs(); updateSidebarStats();
+}
+
+/* ═══════════════ WORD COUNT ════════════════════════════ */
+function setupWC(taId, wcId) {
+  document.getElementById(taId).addEventListener('input',()=>{
+    const w=document.getElementById(taId).value.trim().split(/\s+/).filter(w=>w);
+    document.getElementById(wcId).textContent=w.length+' word'+(w.length!==1?'s':'');
+    updateSidebarStats();
+  });
+}
+
+/* ═══════════════ COACH ══════════════════════════════════ */
+function renderCoach() {
+  const card=document.getElementById('coachCard');
+  if (!document.getElementById('coachToggle').checked) { card.style.display='none'; return; }
+  const bs=(sess(currentDay)||{}).brainstorm||'';
+  const lower=bs.toLowerCase();
+  const qs=[];
+  if(lower.includes('should')||lower.includes('must')) qs.push("What assumptions are you making about what people should do here?");
+  else qs.push("What assumptions are hiding beneath your notes that you haven't said out loud?");
+  if(lower.includes('example')||lower.includes('story')||lower.includes('remember')) qs.push("Which single example from your brainstorm best carries the entire idea, and why?");
+  else qs.push("If you had to pick one story from your life to illustrate this, which one?");
+  qs.push("If someone intelligent disagreed with you, where would they push back first?");
+  card.style.display='block';
+  card.innerHTML=`<div class="coach-card"><div class="coach-card-lbl">THINKING COACH</div>${qs.slice(0,3).map((q,i)=>`<div class="coach-q"><strong>Q${i+1}.</strong> ${q}</div>`).join('')}</div>`;
+}
+
+document.getElementById('coachToggle').addEventListener('change',renderCoach);
+
+/* ═══════════════ CONSTRAINTS ═══════════════════════════ */
+function renderConstraints() {
+  const row=document.getElementById('constraintChips'); row.innerHTML='';
+  if(!currentDay) return;
+  const s=sess(currentDay);
+  CONSTRAINTS.forEach(c=>{
+    const chip=document.createElement('span');
+    chip.className='chip'+(s.constraints[c.id]?' on':'');
+    chip.textContent=c.label;
+    chip.addEventListener('click',()=>{
+      s.constraints[c.id]=!s.constraints[c.id]; save();
+      chip.classList.toggle('on',s.constraints[c.id]);
+      checkViolations();
+    });
+    row.appendChild(chip);
+  });
+}
+
+function checkViolations() {
+  const text=(sess(currentDay)||{}).write||'';
+  const s=sess(currentDay)||{};
+  const viols=[];
+  if(s.constraints.noCrutch){ const found=CRUTCH.filter(w=>countP(text,[w])>0); if(found.length) viols.push('Crutch words: '+found.slice(0,4).join(', ')); }
+  if(s.constraints.max120 && words(text).length>120) viols.push('Over limit: '+words(text).length+' / 120 words');
+  if(s.constraints.rebuttal && !hasP(text,T_REBUTTAL)) viols.push('No rebuttal yet — try: however, but, admittedly…');
+  const note=document.getElementById('violationNote');
+  note.textContent=viols.join(' · ');
+  note.classList.toggle('on',viols.length>0);
+}
+
+/* ═══════════════ ANALYSIS ENGINE ═══════════════════════ */
+function words(t){ return (t||'').trim().split(/\s+/).filter(w=>w); }
+function wordList(t){ return words(t).map(w=>w.toLowerCase().replace(/[^a-z]/g,'')); }
+function sents(t){ return (t||'').split(/[.!?]+/).map(s=>s.trim()).filter(s=>s.length>3); }
+
+function countP(text, phrases) {
+  const lo=(text||'').toLowerCase(); let n=0;
+  phrases.forEach(p=>{ const re=new RegExp('\\b'+p.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+'\\b','g'); const m=lo.match(re); if(m) n+=m.length; });
+  return n;
+}
+function hasP(text,phrases){ return countP(text,phrases)>0; }
+function clamp(n,a,b){ return Math.max(a,Math.min(b,Math.round(n))); }
+
+function countSyl(word) {
+  word=word.toLowerCase().replace(/[^a-z]/g,'');
+  if(word.length<=3) return 1;
+  word=word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/,'').replace(/^y/,'');
+  const m=word.match(/[aeiouy]{1,2}/g);
+  return m?m.length:1;
+}
+
+function analyseOffline(brainstorm, write, speechNotes, recordings) {
+  const bs=(brainstorm||'').trim(), sp=(write||'').trim();
+  const spWords=words(sp), spSents=sents(sp);
+  const spW=spWords.length, spS=Math.max(1,spSents.length);
+  const totalSyl=spWords.reduce((a,w)=>a+countSyl(w),0);
+  const avgSL=spW/spS, avgSy=spW?totalSyl/spW:1.5;
+  const fkGrade=spS>1?0.39*avgSL+11.8*avgSy-15.59:10;
+  const fkEase=spS>1?206.835-1.015*avgSL-84.6*avgSy:50;
+
+  const sentLens=spSents.map(s=>words(s).length);
+  const meanL=spS>0?sentLens.reduce((a,b)=>a+b,0)/spS:0;
+  const sentVar=spS>1?Math.sqrt(sentLens.reduce((a,l)=>a+(l-meanL)**2,0)/(spS-1)):0;
+
+  const hedges=countP(sp,HEDGE), crutch=countP(sp,CRUTCH), conv=countP(sp,CONVICTION);
+  const ethos=countP(sp,ETHOS), pathos=countP(sp,PATHOS), logos=countP(sp,LOGOS);
+  const hasClaim=hasP(sp,T_CLAIM), hasGrounds=hasP(sp,T_GROUNDS), hasWarrant=hasP(sp,T_WARRANT), hasRebuttal=hasP(sp,T_REBUTTAL);
+  const hasEvidence=hasP(sp,PEEL_EV), hasHook=hasP(sp,HOOKS), hasClose=hasP(sp,CLOSING);
+
+  const bsWL=wordList(bs), spWL=wordList(sp);
+  const bsSet=new Set(bsWL.filter(w=>w.length>3));
+  let overlap=0; spWL.forEach(w=>{ if(w.length>3&&bsSet.has(w)) overlap++; });
+  const xfer=spWL.length?Math.round(overlap/spWL.length*100):0;
+
+  // Scores
+  let clarity=7;
+  if(fkEase>70) clarity+=2; else if(fkEase<40) clarity-=2;
+  if(sentVar<3) clarity-=1;
+  if(hedges>0) clarity-=Math.min(2,Math.round(hedges/3));
+  if(crutch>0) clarity-=Math.min(2,Math.round(crutch/5));
+  clarity=clamp(clarity,1,10);
+
+  let depth=6;
+  depth+=Math.min(3,[hasClaim,hasGrounds,hasWarrant,hasRebuttal].filter(Boolean).length);
+  depth+=Math.min(2,(ethos>0)+(logos>0)+(pathos>0));
+  if(hasEvidence) depth+=1;
+  if(spW/spS>18) depth+=1;
+  if(xfer>40) depth+=1;
+  depth=clamp(depth,1,10);
+
+  let structure=6;
+  if(hasHook) structure+=2; if(hasClose) structure+=2;
+  if(hasEvidence) structure+=1; if(hasRebuttal&&hasGrounds) structure+=1;
+  structure=clamp(structure,1,10);
+
+  let conviction=6;
+  if(conv>0) conviction+=Math.min(3,conv);
+  if(hedges>0) conviction-=Math.min(3,Math.round(hedges/2));
+  if(crutch>0) conviction-=Math.min(2,Math.round(crutch/4));
+  if(ethos>0) conviction+=1;
+  conviction=clamp(conviction,1,10);
+
+  const overall=clamp(.3*clarity+.3*depth+.2*structure+.2*conviction,1,10);
+
+  // Best sentence
+  let bestSent='', bestSc=-99;
+  spSents.forEach(s=>{ const sc=countP(s,CONVICTION)*2+countP(s,PEEL_EV)+countP(s,LOGOS)-countP(s,HEDGE); if(sc>bestSc){bestSc=sc;bestSent=s;} });
+
+  // Qualitative
+  const worked=[];
+  if(hasHook) worked.push('Your opening uses a hook pattern, which draws the reader in from the first line.');
+  if(hasEvidence) worked.push('You support ideas with examples or evidence phrases, which strengthens logos.');
+  if(logos>0) worked.push('Logical connectors make your reasoning trackable.');
+  if(pathos>0) worked.push('Emotional language gives the piece resonance beyond just information.');
+  if(ethos>0) worked.push('Personal experience cues give the reader your lived perspective.');
+  if(!worked.length) worked.push('You got the idea out of your head and into text — the raw material every strong piece needs.');
+
+  const weak=[];
+  if(hedges>0) weak.push('Hedges soften your stance — trimming them would give your sentences more spine.');
+  if(crutch>0) weak.push('Crutch words blur meaning. Replacing them with precise nouns and verbs would sharpen the writing.');
+  if(!hasClose) weak.push('The ending doesn\'t yet land cleanly. One declarative summary sentence could close it well.');
+  if(!hasHook) weak.push('The opening arrives without a hook. A brief image or question could pull the reader in from line one.');
+  if(!hasRebuttal) weak.push('There\'s little counterpoint. Acknowledging one opposing view could deepen trust.');
+  if(!weak.length) weak.push('Consider adding one more concrete example, or sharpening transitions between ideas.');
+
+  let weakDim='clarity', minSc=clarity;
+  if(depth<minSc){minSc=depth;weakDim='depth';}
+  if(structure<minSc){minSc=structure;weakDim='structure';}
+  if(conviction<minSc){minSc=conviction;weakDim='conviction';}
+
+  const exMap={clarity:'Tomorrow, rewrite twice: once under 150 words, then under 80, removing all hedges and crutch words while keeping the core message.',depth:'Tomorrow, write one explicit claim, three grounds, one warrant, and one counterpoint with a short rebuttal.',structure:'Tomorrow, sketch a PEEL outline (Point, Evidence, Explain, Link) before writing, then check each paragraph against it.',conviction:'Tomorrow, add at least two conviction markers and one personal example, while removing any hedge that isn\'t strictly necessary.'};
+  const chMap={clarity:'Rewrite in under 120 words, deleting all hedge and crutch words while preserving the main claim.',depth:'Add one vivid, concrete example or short story that lets a stranger visualise your point instantly.',structure:'Rewrite using explicit PEEL: one sentence point, evidence, explanation, link back to topic.',conviction:'Rewrite adding at least two conviction markers and one explicit rebuttal to a likely counterargument.'};
+
+  const totalRecs=recordings||[];
+  let totalDur=0, totalFill=0;
+  totalRecs.forEach(r=>{ totalDur+=r.durationSec||0; totalFill+=r.fillersCount||0; });
+
+  const heatmap=spSents.map(s=>{ const h=countP(s,HEDGE),c=countP(s,CRUTCH),k=countP(s,CONVICTION); let label='neutral'; if(k>0&&h===0&&c<=1) label='strong'; else if(h>0||c>1) label='weak'; return {sentence:s,label}; });
+
+  return {
+    clarity,depth,structure,conviction,overall,
+    bestSentence:bestSent,
+    whatWorked:worked, priority:weak[0], secondary:weak[1]||weak[0],
+    tomorrow:exMap[weakDim], challenge:chMap[weakDim],
+    diag:{
+      readability:`Words: ${spW} · Sentences: ${spS} · Flesch ease: ${fkEase.toFixed(0)} · FK grade: ${fkGrade.toFixed(1)} · Avg sentence: ${avgSL.toFixed(1)} words · Sent variation: ${sentVar.toFixed(1)}`,
+      aristotle:`Logos: ${logos>0?'✓':'–'} · Pathos: ${pathos>0?'✓':'–'} · Ethos: ${ethos>0?'✓':'–'}`,
+      toulmin:`Claim: ${hasClaim?'✓':'–'} · Grounds: ${hasGrounds?'✓':'–'} · Warrant: ${hasWarrant?'✓':'–'} · Rebuttal: ${hasRebuttal?'✓':'–'}`,
+      structure:`Hook: ${hasHook?'✓':'–'} · Evidence: ${hasEvidence?'✓':'–'} · Close: ${hasClose?'✓':'–'}`,
+      lexical:`Hedges: ${hedges} · Crutch: ${crutch} · Conviction markers: ${conv}`,
+      transfer:`Brainstorm: ${words(bs).length} words · Write: ${spW} words · Overlap: ${xfer}%`,
+    },
+    heatmap
+  };
+}
+
+/* ═══════════════ RENDER FEEDBACK ═══════════════════════ */
+function renderFeedback(r, isAI) {
+  const s=sess(currentDay);
+  s.scores={clarity:r.clarity,depth:r.depth,structure:r.structure,conviction:r.conviction,overall:r.overall};
+  s.diagnostics={bestSentence:r.bestSentence,whatWorked:r.whatWorked,priority:r.priority,secondary:r.secondary,tomorrow:r.tomorrow,diag:r.diag,heatmap:r.heatmap};
+  s.rewriteChallenge=r.challenge||'';
+  s.feedbackSource=isAI?'ai':'offline';
+  save();
+
+  const badge=isAI?`<div class="feedback-badge ai">✦ CLAUDE AI</div>`:`<div class="feedback-badge">⚙ OFFLINE</div>`;
+  const dims=['clarity','depth','structure','conviction','overall'];
+  const scoreHTML=`<div class="score-row">${dims.map(d=>`<div class="score-chip${r[d]>=7?' lit':''}"><div class="score-num">${r[d]}</div><div class="score-lbl">${d.toUpperCase()}</div></div>`).join('')}</div>`;
+
+  const workedHTML=`<ul>${(r.whatWorked||[]).map(w=>`<li>${w}</li>`).join('')}</ul>`;
+
+  const heatHTML=r.heatmap?.length
+    ? r.heatmap.map(l=>`<div class="hm-line hm-${l.label}">${l.sentence}</div>`).join('')
+    : '<div class="hm-empty">Run feedback to colour each sentence.</div>';
+
+  let diagHTML='';
+  if(r.diag){
+    const rows=Object.entries({Readability:r.diag.readability,Aristotle:r.diag.aristotle,Toulmin:r.diag.toulmin,'Structure cues':r.diag.structure,'Lexical':r.diag.lexical,'Transfer':r.diag.transfer}).filter(([,v])=>v);
+    diagHTML=rows.map(([k,v])=>`<div class="diag-card"><div class="diag-title">${k}</div><div class="diag-sub">${v}</div></div>`).join('');
+  }
+
+  const html=`
+    <div class="feedback-header">${badge}<div class="feedback-title">Your analysis</div></div>
+    ${scoreHTML}
+    <div class="fb-sections">
+      <div class="fb-block">
+        <div class="fb-stitle gold">STRONGEST LINE</div>
+        <div class="fb-highlight">${r.bestSentence||'(run feedback on your written piece)'}</div>
+      </div>
+      <div class="fb-block">
+        <div class="fb-stitle green">WHAT WORKED</div>
+        <div class="fb-text">${workedHTML}</div>
+      </div>
+      <div class="fb-block">
+        <div class="fb-stitle blue">PRIORITY IMPROVEMENT</div>
+        <div class="fb-text">${r.priority||'–'}</div>
+      </div>
+      <div class="fb-block">
+        <div class="fb-stitle">SECONDARY OBSERVATION</div>
+        <div class="fb-text">${r.secondary||'–'}</div>
+      </div>
+      <div class="fb-block">
+        <div class="fb-stitle">TOMORROW'S EXERCISE</div>
+        <div class="fb-text">${r.tomorrow||'–'}</div>
+      </div>
+      <div class="fb-block">
+        <div class="fb-stitle red">REWRITE CHALLENGE</div>
+        <div class="fb-challenge">${r.challenge||'–'}</div>
+      </div>
+      <div class="fb-block">
+        <div class="fb-stitle">LINE HEATMAP</div>
+        <div class="heatmap-wrap">
+          <div class="heatmap-head">Sentence strength <div class="hm-legend"><span class="hm-leg" style="background:rgba(30,122,82,.14)">strong</span><span class="hm-leg" style="background:rgba(181,52,28,.1)">hedged</span><span class="hm-leg" style="background:rgba(201,151,42,.08)">neutral</span></div></div>
+          <div class="hm-body">${heatHTML}</div>
+        </div>
+      </div>
+    </div>
+    ${diagHTML?`<div class="diag-section"><div class="diag-header" onclick="this.nextElementSibling.classList.toggle('open');this.lastElementChild.textContent=this.nextElementSibling.classList.contains('open')?'▲ HIDE':'▼ SHOW'>DIAGNOSTICS <span>▼ SHOW</span></div><div class="diag-grid">${diagHTML}</div></div>`:''}`;
+
+  const fc=document.getElementById('feedbackContent');
+  fc.innerHTML=html; fc.classList.add('visible');
+  document.getElementById('feedbackLoading').style.display='none';
+  document.getElementById('completeBtn').classList.add('show');
+  renderList(); updateHeader();
+}
+
+/* ═══════════════ OFFLINE FEEDBACK ══════════════════════ */
+function runOfflineFeedback() {
+  const s=sess(currentDay);
+  document.getElementById('feedbackLoading').style.display='flex';
+  document.getElementById('feedbackContent').classList.remove('visible');
+  setTimeout(()=>{
+    const r=analyseOffline(s.brainstorm||'', s.write||'', s.speechNotes||'', s.recordings||[]);
+    renderFeedback(r, false);
+  },600);
+}
+
+/* ═══════════════ AI FEEDBACK ════════════════════════════ */
+async function runAIFeedback() {
+  const s=sess(currentDay);
+  if(!s.write||s.write.trim().length<15) { toast('Write something first, then run AI feedback.'); return; }
+  const btn=document.getElementById('aiFeedbackBtn');
+  btn.classList.add('loading'); btn.textContent='⟳ ANALYSING…';
+  document.getElementById('feedbackLoading').style.display='flex';
+  document.getElementById('feedbackContent').classList.remove('visible');
+  const topic=topics[currentDay-1]?.topic||'Day '+currentDay;
+  const sys=`You are an expert communication coach for Art of Articulation. Analyse the writing with genuine specificity — reference actual phrases from the user's text. Return ONLY valid JSON, no markdown. Schema: {"clarity":int,"depth":int,"structure":int,"conviction":int,"overall":int,"bestSentence":"exact line","whatWorked":["obs1","obs2","obs3"],"priority":"most impactful fix","secondary":"second note","tomorrow":"concrete drill","challenge":"rewrite task","diag":{"readability":"string","aristotle":"string","toulmin":"string","structure":"string","lexical":"string","transfer":"string"}}. Scores 1-10, honest — above 8 is genuinely earned.`;
+  const usr=`Topic: "${topic}"\nBRAINSTORM:\n${s.brainstorm||'(empty)'}\nWRITING:\n${s.write||'(empty)'}\nSPEECH NOTES:\n${s.speechNotes||'(none)'}`;
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:[{role:'user',content:usr}]})});
+    const data=await res.json();
+    const raw=(data.content||[]).map(b=>b.text||'').join('').replace(/```json|```/g,'').trim();
+    const p=JSON.parse(raw);
+
+    // Build offline result for heatmap since AI doesn't return it
+    const offline=analyseOffline(s.brainstorm||'',s.write||'',s.speechNotes||'',s.recordings||[]);
+
+    renderFeedback({
+      clarity:Math.max(1,Math.min(10,+p.clarity)),
+      depth:Math.max(1,Math.min(10,+p.depth)),
+      structure:Math.max(1,Math.min(10,+p.structure)),
+      conviction:Math.max(1,Math.min(10,+p.conviction)),
+      overall:Math.max(1,Math.min(10,+p.overall)),
+      bestSentence:p.bestSentence||'',
+      whatWorked:p.whatWorked||[],
+      priority:p.priority||'',
+      secondary:p.secondary||'',
+      tomorrow:p.tomorrow||'',
+      challenge:p.challenge||'',
+      diag:p.diag||offline.diag,
+      heatmap:offline.heatmap
+    }, true);
+    toast('✦ AI feedback complete!');
+  } catch(err) {
+    console.error(err);
+    toast('AI feedback failed — running offline analysis.');
+    runOfflineFeedback();
+  } finally {
+    btn.classList.remove('loading'); btn.innerHTML='✦ AI FEEDBACK';
+  }
+}
+
+/* ═══════════════ MODE SYSTEM ════════════════════════════ */
+const modeCfg = {
+  P:{ label:'PERSUADE', what:'Make a case. Argue for something. Change minds.',
+      tips:[{icon:'→',text:'State your position in the first paragraph'},{icon:'→',text:'Acknowledge the opposing view before rebutting it'},{icon:'→',text:'Close with what you want the reader to do or believe'}],
+      writeDesc:'Argue for a clear position. Use evidence, address counterarguments, and close with conviction.',
+      speakDesc:'Deliver your argument as if you need to actually convince someone in the room.' },
+  I:{ label:'INFORM', what:'Illuminate. Explain. Help the reader understand something clearly.',
+      tips:[{icon:'→',text:'Choose a clear angle — not everything about the topic'},{icon:'→',text:'Use a concrete example for every abstract claim'},{icon:'→',text:'End with the single most important thing to remember'}],
+      writeDesc:'Explain clearly. Prioritise the reader\'s understanding over your own comfort with the material.',
+      speakDesc:'Deliver it as if the person listening has never thought about this before.' },
+  E:{ label:'EXPLORE', what:'Think out loud. No thesis required — just honest inquiry.',
+      tips:[{icon:'→',text:'Start with a genuine question, not an answer'},{icon:'→',text:'Change direction if something unexpected surfaces'},{icon:'→',text:'End with where your thinking landed, even if unresolved'}],
+      writeDesc:'Follow your thinking wherever it leads. Structure can be loose — honesty is the priority.',
+      speakDesc:'Speak as if you\'re thinking through it live. Uncertainty is fine here.' }
+};
+
+function injectModeUI(mode) {
+  const cfg=modeCfg[mode]||modeCfg.E;
+  const badge=`<div class="mode-badge mode-${mode}"><div class="mode-dot"></div>${cfg.label}</div>`;
+  const guide=`<div class="mode-guide"><div class="mode-guide-title">WHAT THIS MODE ASKS</div><div class="mode-guide-text">${cfg.what}</div><div class="mode-guide-tips">${cfg.tips.map(t=>`<div class="mode-tip"><span style="font-family:'DM Mono',monospace;font-size:10px">${t.icon}</span><span>${t.text}</span></div>`).join('')}</div></div>`;
+  ['1','2','3'].forEach(n=>{ const el=document.getElementById('modeBadge'+n); if(el) el.innerHTML=badge; });
+  const g=document.getElementById('modeGuide1'); if(g) g.innerHTML=guide;
+  const p2=document.getElementById('p2desc'); if(p2) p2.textContent=cfg.writeDesc;
+  const p3=document.getElementById('p3desc'); if(p3) p3.textContent=cfg.speakDesc;
+}
+
+/* ═══════════════ SESSION ════════════════════════════════ */
+function startSession(dayNum) {
+  currentDay=dayNum;
+  const t=topics[dayNum-1];
+  [1,2,3].forEach(n=>resetTimer(n));
+  document.getElementById('sidebarDay').textContent='DAY '+dayNum;
+  document.getElementById('sidebarTopic').textContent=t.topic;
+  document.getElementById('pTopic1').textContent=t.topic;
+  document.getElementById('pHint1').textContent=t.prompt;
+  injectModeUI(t.mode||'E');
+  const s=sess(dayNum);
+  document.getElementById('brainstormText').value=s.brainstorm||'';
+  document.getElementById('writeText').value=s.write||'';
+  const bsWords=words(s.brainstorm||'');
+  const wrWords=words(s.write||'');
+  document.getElementById('wc1').textContent=bsWords.length+' word'+(bsWords.length!==1?'s':'');
+  document.getElementById('wc2').textContent=wrWords.length+' word'+(wrWords.length!==1?'s':'');
+  renderRecs();
+  renderConstraints();
+  document.getElementById('recStatus').textContent=getRecordings().length?'TAP TO RECORD ANOTHER TAKE':'TAP TO START RECORDING';
+  document.getElementById('recTime').classList.remove('visible');
+  document.getElementById('recBtn').classList.remove('recording');
+  document.getElementById('feedbackLoading').style.display='none';
+  document.getElementById('feedbackContent').classList.remove('visible');
+  document.getElementById('feedbackContent').innerHTML='';
+  document.getElementById('completeBtn').classList.remove('show');
+  updateSidebarStats();
+  showView('sessionView');
+  goToPhase(1);
+}
+
+function goToPhase(n) {
+  if(currentDay) {
+    const s=sess(currentDay);
+    s.brainstorm=document.getElementById('brainstormText').value;
+    s.write=document.getElementById('writeText').value;
+    save();
+  }
+  document.getElementById('brainstormRef').textContent=document.getElementById('brainstormText').value||'(nothing written yet)';
+  document.getElementById('speechRef').textContent=document.getElementById('writeText').value||'(nothing written yet)';
+  document.querySelectorAll('.phase-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('phase'+n).classList.add('active');
+  document.querySelectorAll('.phase-item').forEach((item,i)=>{
+    item.classList.remove('active','done-phase');
+    const idx=i; // 0-based: 0=bs,1=wr,2=sp,3=fb
+    if(idx===n-1) item.classList.add('active');
+    else if(idx<n-1) item.classList.add('done-phase');
+  });
+  if(n===2) { renderCoach(); checkViolations(); }
+  if(n===4) {
+    // Restore saved feedback if available
+    const s=sess(currentDay);
+    if(s.scores && s.diagnostics) {
+      // Reconstruct
+      const r={ ...s.scores, ...s.diagnostics, challenge:s.rewriteChallenge };
+      document.getElementById('feedbackLoading').style.display='none';
+      renderFeedback(r, s.feedbackSource==='ai');
+    }
+  }
+  window.scrollTo(0,0);
+}
+
+function markComplete() {
+  if(!currentDay) return;
+  if(!state.completed.includes(currentDay)) { state.completed.push(currentDay); save(); }
+  toast('Day '+currentDay+' complete! Keep going.');
+  exitSession();
+}
+
+function exitSession() {
+  stopAllTimers();
+  if(mediaRecorder&&mediaRecorder.state==='recording') mediaRecorder.stop();
+  showView('listView');
+  renderList(); updateHeader();
+}
+
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function updateSidebarStats() {
+  if(!currentDay) return;
+  const s=sess(currentDay);
+  const wc=words((s.brainstorm||'')+' '+(s.write||'')).length;
+  document.getElementById('sbWords').textContent=wc;
+  document.getElementById('sbRecs').textContent=(s.recordings||[]).length;
+}
+
+/* ═══════════════ LIST VIEW ══════════════════════════════ */
+function renderList() {
+  const body=document.getElementById('listBody'); body.innerHTML='';
+  for(let w=0;w<9;w++){
+    const wt=topics.slice(w*7,Math.min((w+1)*7,topics.length));
+    const sec=document.createElement('div'); sec.className='week-section';
+    const head=document.createElement('div'); head.className='week-head'; head.textContent=weekNames[w];
+    sec.appendChild(head);
+    wt.forEach((t,di)=>{
+      const dn=w*7+di+1;
+      const done=state.completed.includes(dn);
+      const s=state.sessions[dn];
+      const row=document.createElement('div');
+      row.className='day-row'+(done?' completed':'');
+
+      const modeCls=t.mode==='P'?'background:#fdf0ee;color:#b5341c;border:1px solid #e8b4ac':t.mode==='I'?'background:#eef4fb;color:#2a5a8c;border:1px solid #aac4e0':'background:#f0f7f2;color:#1e7a52;border:1px solid #a0ccb0';
+      const modeLabel=t.mode==='P'?'PERSUADE':t.mode==='I'?'INFORM':'EXPLORE';
+
+      let scoresHTML='';
+      if(s?.scores){
+        const isAI=s.feedbackSource==='ai';
+        scoresHTML=`<div class="day-info-score">${['clarity','depth','structure','conviction','overall'].map(d=>`<span class="score-mini${isAI?' ai':''}" title="${d}">${d[0].toUpperCase()}${s.scores[d]}</span>`).join('')}</div>`;
+      }
+
+      row.innerHTML=`
+        <div class="day-n">${String(dn).padStart(2,'0')}</div>
+        <div>
+          <div class="day-cat">${t.cat}</div>
+          <div class="day-topic">${t.topic}</div>
+          <div style="margin-top:4px"><span style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 7px;border-radius:10px;${modeCls}">${modeLabel}</span></div>
+          ${scoresHTML}
+        </div>
+        <div class="day-actions">
+          <button class="start-btn${done?' done-btn':''}" onclick="event.stopPropagation();startSession(${dn})">${done?'REDO':'BEGIN'}</button>
+          <div class="check-mark"><svg viewBox="0 0 10 10"><polyline points="1,5 4,8 9,2"/></svg></div>
+        </div>`;
+      row.addEventListener('click',()=>startSession(dn));
+      sec.appendChild(row);
+    });
+    body.appendChild(sec);
+  }
+}
+
+function updateHeader() {
+  const pct=(state.completed.length/60)*100;
+  document.getElementById('hpFill').style.width=pct+'%';
+  document.getElementById('hpLabel').textContent=state.completed.length+' / 60';
+}
+
+/* ═══════════════ WORD COUNT ════════════════════════════ */
+setupWC('brainstormText','wc1');
+
+document.getElementById('writeText').addEventListener('input',()=>{
+  const w=document.getElementById('writeText').value.trim().split(/\s+/).filter(w=>w);
+  document.getElementById('wc2').textContent=w.length+' word'+(w.length!==1?'s':'');
+  if(currentDay){ sess(currentDay).write=document.getElementById('writeText').value; save(); }
+  checkViolations(); updateSidebarStats();
+});
+
+document.getElementById('brainstormText').addEventListener('input',()=>{
+  if(currentDay){ sess(currentDay).brainstorm=document.getElementById('brainstormText').value; save(); }
+  updateSidebarStats();
+});
+
+/* ═══════════════ EXPORT / IMPORT ═══════════════════════ */
+document.getElementById('exportBtn').addEventListener('click',()=>document.getElementById('exportModal').classList.add('on'));
+document.getElementById('importBtn').addEventListener('click',()=>document.getElementById('importModal').classList.add('on'));
+document.getElementById('closeExport').addEventListener('click',()=>document.getElementById('exportModal').classList.remove('on'));
+document.getElementById('closeImport').addEventListener('click',()=>document.getElementById('importModal').classList.remove('on'));
+['exportModal','importModal'].forEach(id=>document.getElementById(id).addEventListener('click',e=>{ if(e.target===e.currentTarget) e.currentTarget.classList.remove('on'); }));
+
+document.getElementById('doExportJson').addEventListener('click',()=>{
+  const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='aoa-backup.json';a.click();
+  document.getElementById('exportModal').classList.remove('on'); toast('JSON backup downloaded.');
+});
+
+document.getElementById('doExportTxt').addEventListener('click',()=>{
+  let txt='ART OF ARTICULATION — WRITING ARCHIVE\n'+'='.repeat(44)+'\n\n';
+  for(let i=1;i<=60;i++){const s=state.sessions[i];if(!s?.brainstorm&&!s?.write)continue;const t=topics[i-1];txt+=`DAY ${i} — ${t.topic}\n${'-'.repeat(40)}\n`;if(s.brainstorm)txt+=`BRAINSTORM:\n${s.brainstorm}\n\n`;if(s.write)txt+=`WRITING:\n${s.write}\n\n`;if(s.scores)txt+=`SCORES: C${s.scores.clarity} D${s.scores.depth} S${s.scores.structure} K${s.scores.conviction} O${s.scores.overall}\n`;txt+='\n';}
+  const blob=new Blob([txt],{type:'text/plain'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='aoa-writing.txt';a.click();
+  document.getElementById('exportModal').classList.remove('on'); toast('Writing archive downloaded.');
+});
+
+document.getElementById('doImportSelect').addEventListener('click',()=>document.getElementById('importFileInput').click());
+document.getElementById('importFileInput').addEventListener('change',e=>{
+  const file=e.target.files[0];if(!file)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{const d=JSON.parse(ev.target.result);if(d.sessions||d.completed){state=d;save();renderList();updateHeader();document.getElementById('importModal').classList.remove('on');toast('Data imported!');}else toast('Invalid file format.');}
+    catch(err){toast('Could not parse file.');}
+  };
+  r.readAsText(file); e.target.value='';
+});
+
+document.getElementById('doClear').addEventListener('click',()=>{
+  if(confirm('Permanently delete all progress?')){state={completed:[],sessions:{}};save();renderList();updateHeader();document.getElementById('importModal').classList.remove('on');toast('All data cleared.');}
+});
+
+/* ═══════════════ KEYBOARD ══════════════════════════════ */
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='TEXTAREA'||e.target.tagName==='INPUT') return;
+  const inSession=document.getElementById('sessionView').classList.contains('active');
+  if(!inSession) return;
+  if(e.code==='Space'){
+    e.preventDefault();
+    const activePanel=document.querySelector('.phase-panel.active');
+    if(!activePanel) return;
+    const id=activePanel.id.replace('phase','');
+    const n=parseInt(id);
+    if(n>=1&&n<=3){ const s=TS[n]; if(s.running)resetTimer(n);else toggleTimer(n); }
+  }
+});
+
+/* ═══════════════ INIT ═══════════════════════════════════ */
+[1,2,3].forEach(n=>dispTimer(n));
+renderList();
+updateHeader();
+</script>
+</body>
+</html>
